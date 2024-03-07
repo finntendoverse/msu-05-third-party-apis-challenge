@@ -1,27 +1,29 @@
 # Third-Party APIs Challenge: Work Day Scheduler
 
 ## Description
-AS AN employee with a busy schedule<br>
-I WANT to add important events to a daily planner<br>
-SO THAT I can manage my time effectively
+AS A project team member with multiple tasks to organize<br>
+I WANT a task board<br>
+SO THAT I can add individual project tasks, manage their state of progress and track overall project progress accordingly
 
 ## Installation
 N/A
 
 ## Usage
-GIVEN I am using a daily planner to create a schedule<br>
-WHEN I open the planner<br>
-THEN the current day is displayed at the top of the calendar<br>
-WHEN I scroll down<br>
-THEN I am presented with time blocks for standard business hours of 9am to 5pm<br>
-WHEN I view the time blocks for that day<br>
-THEN each time block is color-coded to indicate whether it is in the past, present, or future<br>
-WHEN I click into a time block<br>
-THEN I can enter an event<br>
-WHEN I click the save button for that time block<br>
-THEN the text for that event is saved in local storage<br>
+GIVEN a task board to manage a project<br>
+WHEN I open the task board<br>
+THEN the list of project tasks is displayed in columns representing the task progress state (Not Yet Started, In Progress, Completed)<br>
+WHEN I view the task board for the project<br>
+THEN each task is color coded to indicate whether it is nearing the deadline (yellow) or is overdue (red)<br>
+WHEN I click on the button to define a new task<br>
+THEN I can enter the title, description and deadline date for the new task into a modal dialog<br>
+WHEN I click the save button for that task<br>
+THEN the properties for that task are saved in localStorage<br>
+WHEN I drag a task to a different progress column<br>
+THEN the task's progress state is updated accordingly and will stay in the new column after refreshing<br>
+WHEN I click the delete button for a task<br>
+THEN the task is removed from the task board and will not be added back after refreshing<br>
 WHEN I refresh the page<br>
-THEN the saved events persist
+THEN the saved tasks persist
 
 ## Credits
 

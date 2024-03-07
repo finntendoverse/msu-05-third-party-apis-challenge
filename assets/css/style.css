@@ -14,3 +14,8 @@ body {
 .task-card:hover {
   cursor: grab;
 }
+
+.modal-body input {
+  width: 100%;
+  margin: 0px 0px 30px 0px;
+}
