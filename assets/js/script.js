@@ -12,6 +12,7 @@ function generateTaskId() {
 function createTaskCard(task) {
     let taskCard = document.createElement("p");
     taskCard.setAttribute("class", "task-card");
+    taskCard.setAttribute("id", task.id);
     taskCard.setAttribute("style", "background-color: green");
     taskCard.innerHTML = task.task + "<br>" + task.description + "<br>" + task.deadline + "<br>" + `<button class="delete-button">delete</button`;
     document.querySelector("#todo-cards").appendChild(taskCard);
@@ -29,8 +30,17 @@ function handleAddTask(event) {
 }
 
 // Todo: create a function to handle deleting a task
-function handleDeleteTask(event){
+let handleDeleteTask = function() {
     let deleteButton = document.querySelectorAll(".delete-button");
+    deleteButton.forEach(function(button) {
+        button.addEventListener("click", function() {
+            let parentCard = button.closest(".task-card");
+            let parentCardId = parentCard.getAttribute("id");
+            parentCard.remove();
+            taskList = taskList.filter(task => task.id !== parseInt(parentCardId)); // Xpert Learning Assistant generated this line of code for me
+            localStorage.setItem("tasks", JSON.stringify(taskList));
+        })
+    });
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
@@ -62,6 +72,7 @@ $(document).ready(function () {
         localStorage.setItem("tasks", JSON.stringify(taskList));
         createTaskCard(task);
         renderTaskList();
+        handleDeleteTask()
     });
 
 
