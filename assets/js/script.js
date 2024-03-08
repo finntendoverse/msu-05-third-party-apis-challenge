@@ -1,5 +1,9 @@
 let taskList = [];
 let nextId = 0;
+let taskCard;
+
+// shows the current date at the top of the page
+document.querySelector("#current-date").innerHTML = "Today's date: " + dayjs().format("MM-DD-YYYY");
 
 // this function generates a unique task id that is saved in local storage
 function generateTaskId() {
@@ -10,10 +14,10 @@ function generateTaskId() {
 
 // this function creates the task card and appends it to the to-do section
 function createTaskCard(task) {
-    let taskCard = document.createElement("p");
+    taskCard = document.createElement("p");
     taskCard.setAttribute("class", "task-card");
     taskCard.setAttribute("id", task.id);
-    taskCard.setAttribute("style", "background-color: green");
+    // taskCard.setAttribute("style", "background-color: green");
     taskCard.innerHTML = task.task + "<br>" + task.description + "<br>" + task.deadline + "<br>" + `<button class="delete-button">delete</button`;
     document.querySelector("#todo-cards").appendChild(taskCard);
     return taskCard;
@@ -53,6 +57,29 @@ function handleDrop(event, ui) {
     })
 };
 
+// function that checks how close the deadline is
+function checkDeadlines(task) {
+    // date variables
+    let currentDate = dayjs()
+    let taskDate = dayjs(task.deadline);
+    let dateDifference = taskDate.diff(currentDate, "day")
+    console.log(currentDate);
+    console.log(taskDate);
+    console.log(taskDate.diff(currentDate, "day"));
+    if (taskCard) {
+        if (dateDifference <= -1) {
+            taskCard.setAttribute("class", "overdue");
+        } else if (dateDifference <= 6) {
+            taskCard.setAttribute("class", "nearing-deadline");
+        } else {
+            taskCard.setAttribute("class", "plenty-of-time");
+        }
+
+    } else {
+        console.log("error: taskCard element not found");
+    }
+};
+
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
     renderTaskList();
@@ -68,9 +95,9 @@ $(document).ready(function () {
             status: "to do"
         };
         taskList.push(task);
-        console.log(taskList);
         localStorage.setItem("tasks", JSON.stringify(taskList));
         createTaskCard(task);
+        checkDeadlines(task);
         renderTaskList();
         handleDeleteTask()
     });

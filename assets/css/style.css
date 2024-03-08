@@ -19,3 +19,19 @@ body {
   width: 100%;
   margin: 0px 0px 30px 0px;
 }
+
+.plenty-of-time {
+  background-color: green;
+}
+
+.nearing-deadline {
+  background-color: yellow;
+}
+
+.overdue {
+  background-color: red;
+}
+
+.done {
+  background-color: white;
+}
