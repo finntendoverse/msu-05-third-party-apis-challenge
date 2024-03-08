@@ -34,7 +34,7 @@ function handleAddTask(event) {
 }
 
 // Todo: create a function to handle deleting a task
-let handleDeleteTask = function() {
+function handleDeleteTask(task) {
     let deleteButton = document.querySelectorAll(".delete-button");
     deleteButton.forEach(function(button) {
         button.addEventListener("click", function() {
@@ -68,11 +68,11 @@ function checkDeadlines(task) {
     console.log(taskDate.diff(currentDate, "day"));
     if (taskCard) {
         if (dateDifference <= -1) {
-            taskCard.setAttribute("class", "overdue");
+            taskCard.classList.add("overdue");
         } else if (dateDifference <= 6) {
-            taskCard.setAttribute("class", "nearing-deadline");
+            taskCard.classList.add("nearing-deadline");
         } else {
-            taskCard.setAttribute("class", "plenty-of-time");
+            taskCard.classList.add("plenty-of-time");
         }
 
     } else {
@@ -99,7 +99,7 @@ $(document).ready(function () {
         createTaskCard(task);
         checkDeadlines(task);
         renderTaskList();
-        handleDeleteTask()
+        handleDeleteTask(task);
     });
 
 

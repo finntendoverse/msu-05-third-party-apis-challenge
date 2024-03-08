@@ -8,7 +8,7 @@ body {
 }
 
 .task-card {
-  margin: 0 auto;
+  margin: 20px 0px 20px 0px;
 }
 
 .task-card:hover {
