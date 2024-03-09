@@ -11,13 +11,8 @@ function renderTaskList() {                                             // WHEN 
     taskList = JSON.parse(localStorage.getItem("tasks")) || [];         // THEN the tasks array is gotten from the local storage
     taskList.forEach(task => {                                          // THEN for each task a user has already inputted in a past session
         createTaskCard(task);                                               // a task card is created, and then that function handles the deadline checking, dragging functionality, and delete functionality
-    });
-
-    // if (task.status === "in progress") {
-    //     console.log(task.status);
-    //       document.querySelector("#in-progress-cards").appendChild(taskCard);
-    // }
-}
+    })
+};
 
 // this function generates a unique task id that is saved in local storage
 function generateTaskId() {                             // WHEN the generateTaskId function is called
@@ -53,9 +48,9 @@ function createTaskCard(task) {                                                 
     taskCard.setAttribute("style", "z-index: 1");                                                                                                       // THEN the style of the <p> tag is set to a z-index of 1, meaning it is the foreground of the page and will not be hidden behind any other element
     taskCard.innerHTML = task.task + "<br>" + task.description + "<br>" + task.deadline + "<br>" + `<button class="delete-button">delete</button`;      // THEN the text content of the p tag is set to the task's name, description, due date, and a delete button
     document.querySelector("#todo-cards").appendChild(taskCard);                                                                                        // THEN the <p> tag is inserted in the to-do section of the DOM
-    
+
     checkDeadlines(task);                                                                                                                               // THEN the deadline is checked against the current date to determine if the task is overdue, if the task is due within the next week, or if the deadline is still over a week away
-    handleDrag();                                                                                                                                       // THEN the dragging functionality is applied to the task card
+    handleDrag(task, taskCard);                                                                                                                         // THEN the dragging functionality is applied to the task card
     handleDeleteTask(task);                                                                                                                             // THEN the "delete" button on the task card awaits to be clicked
 
     return taskCard;                                                                                                                                    // THEN the taskCard is returned for later DOM manipulation
@@ -92,24 +87,20 @@ function handleDeleteTask(task) {
 }
 
 // function to make task cards draggable
-function handleDrag() {
+function handleDrag(task, taskCard) {
     $(taskCard).draggable({
-        containment: "parent",
-        snap: true,
-        grid: [20, 20],
-            cursor: "move"
-    });
-}
-
-// Todo: create a function to handle dropping a task into a new status lane
-function handleDrop(task, taskCard) {
-    $("#in-progress-column").droppable({
-        drop: function() {
-          task.status = "in progress";
-          console.log(task.status);
-          document.querySelector("#in-progress-cards").appendChild(taskCard);
+        containment: "document",
+        connectToSortable: "#to-do-column, #in-progress-column, #done-column",
+        stop: function(event, ui) {
+            var position = {
+                top: ui.position.top,
+                left: ui.position.left
+            };
+            localStorage.setItem("itemPosition", JSON.stringify(position));
         }
     })
+
+    $("#to-do-column, #in-progress-column, #done-column").sortable();
 };
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
