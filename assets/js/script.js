@@ -62,10 +62,17 @@ function generateTaskId() {                             // WHEN the generateTask
     nextId++                                            // THEN the Id number increases by 1 each time
     localStorage.setItem("nextId", nextId);             // THEN the Id number is saved in localStorage so the object's Ids will all be unique even if the page is closed
     return nextId;                                      // THEN the Id number is returned
-};
+}
 
 // this function create tasks and adds them to local storage
 function handleAddTask(event) {
+    let discardTaskButton = document.querySelector("#dismiss");
+    discardTaskButton.addEventListener("click", function() {                // WHEN the discard task button is clicked
+        document.querySelector("#task").value = "";                         // THEN the text field for the task is reset to the placeholder
+        document.querySelector("#description").value = "";                  // THEN the text field for the description is reset to the placeholder
+        document.querySelector("#deadline").value = "";                     // THEN the date field is reset to the placeholder
+    });
+    
     let createTaskButton = document.querySelector("#create-task");
     createTaskButton.addEventListener("click", function() {                 // WHEN the create task button is clicked
         let task = {                                                        // THEN a task object is created:
@@ -78,8 +85,12 @@ function handleAddTask(event) {
         toDo.push(task);                                                    // THEN the task is pushed to the end of the toDo tasks array
         localStorage.setItem("toDo", JSON.stringify(toDo));                 // THEN the item is set to the toDo array in local storage
         createTaskCard(task);                                               // THEN the task card is created
-    })
-};
+        
+        document.querySelector("#task").value = "";                         // THEN the text field for the task is reset to the placeholder
+        document.querySelector("#description").value = "";                  // THEN the text field for the description is reset to the placeholder
+        document.querySelector("#deadline").value = "";                     // THEN the date field is reset to the placeholder
+    });
+}
 
 // this function creates the task card and appends it to the to-do section
 function createTaskCard(task) {                                                                                                                         // WHEN the createTaskCard function is called
@@ -109,7 +120,7 @@ function checkDeadlines(task, taskCard) {                       // WHEN the chec
     } else {                                                    // IF the deadline date is more than a week away
         taskCard.classList.add("plenty-of-time");               // THEN the taskCard will be given a class set to "plenty-of-time", making the card green
     }
-};
+}
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(task) {                                                               // WHEN the handleDeleteFunction is called
@@ -122,19 +133,19 @@ function handleDeleteTask(task) {                                               
             
             if (toDo.some(i => i.id === parseInt(taskCardId))) {                                // IF the taskCardId is included within the toDo array
                 toDo = toDo.filter(task => task.id !== parseInt(taskCardId));                   // THEN it will be removed from that array
-            };
+            }
             if (inProgress.some(i => i.id === parseInt(taskCardId))) {                          // IF the taskCardId is included within the inProgress array
                 inProgress = inProgress.filter(task => task.id !== parseInt(taskCardId));       // THEN it will be removed from that array
-            };
+            }
             if (done.some(i => i.id === parseInt(taskCardId))) {                                // IF the taskCardId is included within the done array
                 done = done.filter(task => task.id !== parseInt(taskCardId));                   // THEN it will be removed from that array
-            };
+            }
             
             localStorage.setItem("toDo", JSON.stringify(toDo));                                 // THEN the toDo tasks will be updated in local storage
             localStorage.setItem("inProgress", JSON.stringify(inProgress));                     // THEN the inProgress tasks will be updated in local storage
             localStorage.setItem("done", JSON.stringify(done));                                 // THEN the done tasks will be updated in local storage
         })
-    });
+    })
 }
 
 // function to make task cards draggable
@@ -149,10 +160,10 @@ function handleDrag(task, taskCard) {                                           
                 toDo.push(task)                                                                     // THEN the card is added to the end of the toDos array
                 if (inProgress.some(i => i.id === parseInt(taskCardId))) {                              // IF the card is currently present within the inProgress array
                     inProgress = inProgress.filter(task => task.id !== parseInt(taskCardId));           // THEN it is removed from the array
-                };
+                }
                 if (done.some(i => i.id === parseInt(taskCardId))) {                                    // IF the card is currently present within the done array
                     done = done.filter(task => task.id !== parseInt(taskCardId));                       // THEN it is removed from the array
-                };
+                }
                 localStorage.setItem("toDo", JSON.stringify(toDo));                                 // THEN the toDo tasks will be updated in local storage
                 localStorage.setItem("inProgress", JSON.stringify(inProgress));                     // THEN the inProgress tasks will be updated in local storage
                 localStorage.setItem("done", JSON.stringify(done));                                 // THEN the done tasks will be updated in local storage
@@ -162,10 +173,10 @@ function handleDrag(task, taskCard) {                                           
                 inProgress.push(task);                                                              // THEN the card is added to the end of the inProgress array
                 if (toDo.some(i => i.id === parseInt(taskCardId))) {                                    // IF the card is currently present within the toDo array
                     toDo = toDo.filter(task => task.id !== parseInt(taskCardId));                       // THEN it is removed from the array
-                };
+                }
                 if (done.some(i => i.id === parseInt(taskCardId))) {                                    // IF the card is currently present within the done array
                     done = done.filter(task => task.id !== parseInt(taskCardId));                       // THEN it is removed from the array
-                };
+                }
                 localStorage.setItem("toDo", JSON.stringify(toDo));                                 // THEN the toDo tasks will be updated in local storage
                 localStorage.setItem("inProgress", JSON.stringify(inProgress));                     // THEN the inProgress tasks will be updated in local storage
                 localStorage.setItem("done", JSON.stringify(done));                                 // THEN the done tasks will be updated in local storage
@@ -175,10 +186,10 @@ function handleDrag(task, taskCard) {                                           
                 done.push(task);                                                                    // THEN the card is added to the end of the done array
                 if (toDo.some(i => i.id === parseInt(taskCardId))) {                                    // IF the card is currently present within the toDo array
                     toDo = toDo.filter(task => task.id !== parseInt(taskCardId));                       // THEN it is removed from the array
-                };
+                }
                 if (inProgress.some(i => i.id === parseInt(taskCardId))) {                              // IF the card is currently present within the inProgress array
                     inProgress = inProgress.filter(task => task.id !== parseInt(taskCardId));           // THEN it is removed from the array
-                };
+                }
                 localStorage.setItem("toDo", JSON.stringify(toDo));                                 // THEN the toDo tasks will be updated in local storage
                 localStorage.setItem("inProgress", JSON.stringify(inProgress));                     // THEN the inProgress tasks will be updated in local storage
                 localStorage.setItem("done", JSON.stringify(done));                                 // THEN the done tasks will be updated in local storage
@@ -187,10 +198,11 @@ function handleDrag(task, taskCard) {                                           
     })
 
     $("#to-do-column, #in-progress-column, #done-column").sortable();                               // THEN the droppable areas are designated
-};
+}
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
-$(document).ready(function () {         // WHEN the document loads
-    renderTaskList();                   // THEN the task list is rendered
-    handleAddTask();                    // THEN the document is ready to add new tasks
+$(document).ready(function () {                 // WHEN the document loads
+    nextId = localStorage.getItem("nextId");    // THEN the id in local storage is read so it doesn't reset to 0
+    renderTaskList();                           // THEN the task list is rendered
+    handleAddTask();                            // THEN the document is ready to add new tasks
 });
