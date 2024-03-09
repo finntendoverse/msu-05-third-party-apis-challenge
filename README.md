@@ -31,7 +31,7 @@ if (\[array\].some(i => i.id === parseInt(taskCardId))) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\[array\] = \[array\].filter(task => task.id !== parseInt(taskCardId));<br>
 }<br>
 <br>
-This code handles checking if the id of the deleted task card is included within the toDo array. If it is, then it will be removed from that array. This syntax is repeated several more times to handle deleting the task from the other 2 arrays, and in the handleDrag function to update the arrays as tasks are dragged and dropped.
+This code handles checking if the id of the deleted task card is included within the given array. If it is, then it will be removed from that array. This syntax is repeated several times in the handleDeleteTask function to handle deleting the task from each array when a task is deleted, and in the handleDrag function to update the arrays as tasks are dragged and dropped.
 
 ## Deployed Application
 [Deployed Application Link](finntendoverse.github.io/msu-05-third-party-apis-challenge/)
