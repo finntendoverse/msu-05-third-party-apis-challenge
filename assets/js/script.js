@@ -1,16 +1,53 @@
 // global variables for taskList & Id number that will be stored in local storage, and the taskCards
-let taskList = [];      // taskList is initially set to an empty array
 let nextId = 0;         // the Id is initally set to 0
 let taskCard;           // the taskCard variable is set globally so it can be accessed in multiple functions
+
+let toDo = [];
+let inProgress = [];
+let done = [];
 
 // this shows the current date at the top of the page
 document.querySelector("#current-date").innerHTML = "Today's date: " + dayjs().format("MM-DD-YYYY");
 
 // this function renders the task list
 function renderTaskList() {                                             // WHEN the task list is rendered
-    taskList = JSON.parse(localStorage.getItem("tasks")) || [];         // THEN the tasks array is gotten from the local storage
-    taskList.forEach(task => {                                          // THEN for each task a user has already inputted in a past session
-        createTaskCard(task);                                               // a task card is created, and then that function handles the deadline checking, dragging functionality, and delete functionality
+    toDo = JSON.parse(localStorage.getItem("toDo")) || [];
+    toDo.forEach(task => {
+        taskCard = document.createElement("p");                                                                                                             // THEN a <p> tag is created in the DOM
+        taskCard.setAttribute("class", "task-card");                                                                                                        // THEN the class of the <p> tag is set to task-card
+        taskCard.setAttribute("id", task.id);                                                                                                               // THEN the id of the <p> tag is set to the task's unique id
+        taskCard.innerHTML = task.task + "<br>" + task.description + "<br>" + task.deadline + "<br>" + `<button class="delete-button">delete</button`;      // THEN the text content of the p tag is set to the task's name, description, due date, and a delete button
+        document.querySelector("#todo-cards").appendChild(taskCard); 
+
+        checkDeadlines(task, taskCard);                                                                                                                               // THEN the deadline is checked against the current date to determine if the task is overdue, if the task is due within the next week, or if the deadline is still over a week away
+        handleDrag(task, taskCard);                                                                                                                         // THEN the dragging functionality is applied to the task card
+        handleDeleteTask(task);                                                                                                                             // THEN the "delete" button on the task card awaits to be clicked
+    })
+
+    inProgress = JSON.parse(localStorage.getItem("inProgress")) || [];
+    inProgress.forEach(task => {
+        taskCard = document.createElement("p");                                                                                                             // THEN a <p> tag is created in the DOM
+        taskCard.setAttribute("class", "task-card");                                                                                                        // THEN the class of the <p> tag is set to task-card
+        taskCard.setAttribute("id", task.id);                                                                                                               // THEN the id of the <p> tag is set to the task's unique id
+        taskCard.innerHTML = task.task + "<br>" + task.description + "<br>" + task.deadline + "<br>" + `<button class="delete-button">delete</button`;      // THEN the text content of the p tag is set to the task's name, description, due date, and a delete button
+        document.querySelector("#in-progress-cards").appendChild(taskCard); 
+
+        checkDeadlines(task, taskCard);                                                                                                                               // THEN the deadline is checked against the current date to determine if the task is overdue, if the task is due within the next week, or if the deadline is still over a week away
+        handleDrag(task, taskCard);                                                                                                                         // THEN the dragging functionality is applied to the task card
+        handleDeleteTask(task);                                                                                                                             // THEN the "delete" button on the task card awaits to be clicked
+    })
+
+    done = JSON.parse(localStorage.getItem("done")) || [];
+    done.forEach(task => {
+        taskCard = document.createElement("p");                                                                                                             // THEN a <p> tag is created in the DOM
+        taskCard.setAttribute("class", "task-card");                                                                                                        // THEN the class of the <p> tag is set to task-card
+        taskCard.setAttribute("id", task.id);                                                                                                               // THEN the id of the <p> tag is set to the task's unique id
+        taskCard.innerHTML = task.task + "<br>" + task.description + "<br>" + task.deadline + "<br>" + `<button class="delete-button">delete</button`;      // THEN the text content of the p tag is set to the task's name, description, due date, and a delete button
+        document.querySelector("#done-cards").appendChild(taskCard); 
+
+        checkDeadlines(task, taskCard);                                                                                                                               // THEN the deadline is checked against the current date to determine if the task is overdue, if the task is due within the next week, or if the deadline is still over a week away
+        handleDrag(task, taskCard);                                                                                                                         // THEN the dragging functionality is applied to the task card
+        handleDeleteTask(task);                                                                                                                             // THEN the "delete" button on the task card awaits to be clicked
     })
 };
 
@@ -30,12 +67,10 @@ function handleAddTask(event) {
             task: document.querySelector("#task").value,                        // the task's title (task) is set to the user inputted task
             description: document.querySelector("#description").value,          // the task's description is set to the user inputted description
             deadline: document.querySelector("#deadline").value,                // the task's deadline is set to the user inputted deadline
-            status: "to do"                                                     // the task's status is set to "to do" as a default
         };
         
-        taskList.push(task);                                                // THEN the task is added at the end of the TaskList array
-        localStorage.setItem("tasks", JSON.stringify(taskList));            // THEN the taskList is added to local storage
-
+        toDo.push(task);
+        localStorage.setItem("toDo", JSON.stringify(toDo));
         createTaskCard(task);                                               // THEN the task card is created
     })
 };
@@ -45,11 +80,10 @@ function createTaskCard(task) {                                                 
     taskCard = document.createElement("p");                                                                                                             // THEN a <p> tag is created in the DOM
     taskCard.setAttribute("class", "task-card");                                                                                                        // THEN the class of the <p> tag is set to task-card
     taskCard.setAttribute("id", task.id);                                                                                                               // THEN the id of the <p> tag is set to the task's unique id
-    taskCard.setAttribute("style", "z-index: 1");                                                                                                       // THEN the style of the <p> tag is set to a z-index of 1, meaning it is the foreground of the page and will not be hidden behind any other element
-    taskCard.innerHTML = task.task + "<br>" + task.description + "<br>" + task.deadline + "<br>" + `<button class="delete-button">delete</button`;      // THEN the text content of the p tag is set to the task's name, description, due date, and a delete button
+    taskCard.innerHTML = task.task + "<br>" + task.description + "<br>" + task.deadline + "<br>" + `<button class="delete-button">delete</button>`;     // THEN the text content of the p tag is set to the task's name, description, due date, and a delete button
     document.querySelector("#todo-cards").appendChild(taskCard);                                                                                        // THEN the <p> tag is inserted in the to-do section of the DOM
-
-    checkDeadlines(task);                                                                                                                               // THEN the deadline is checked against the current date to determine if the task is overdue, if the task is due within the next week, or if the deadline is still over a week away
+    
+    checkDeadlines(task, taskCard);                                                                                                                               // THEN the deadline is checked against the current date to determine if the task is overdue, if the task is due within the next week, or if the deadline is still over a week away
     handleDrag(task, taskCard);                                                                                                                         // THEN the dragging functionality is applied to the task card
     handleDeleteTask(task);                                                                                                                             // THEN the "delete" button on the task card awaits to be clicked
 
@@ -57,7 +91,7 @@ function createTaskCard(task) {                                                 
 }
 
 // function that checks how close the deadline is
-function checkDeadlines(task) {                                 // WHEN the checkDeadlines function is called
+function checkDeadlines(task, taskCard) {                                 // WHEN the checkDeadlines function is called
     // date variables
     let currentDate = dayjs()
     let taskDate = dayjs(task.deadline);
@@ -77,11 +111,21 @@ function handleDeleteTask(task) {
     let deleteButton = document.querySelectorAll(".delete-button");
     deleteButton.forEach(function(button) {                                             // FOR EACH delete button on the page
         button.addEventListener("click", function() {                                   // WHEN a delete button is clicked on any task
-            let parentCard = button.closest(".task-card");                              // THEN the parent card is selected
-            let parentCardId = parentCard.getAttribute("id");                           // THEN the id of the parent card is read
-            parentCard.remove();                                                        // THEN the parent card is removed from the page
-            taskList = taskList.filter(task => task.id !== parseInt(parentCardId));     // THEN the taskList is filtered to remove the task with the matching id -- Xpert Learning Assistant generated this line of code for me
-            localStorage.setItem("tasks", JSON.stringify(taskList));                    // THEN the local storage is updated to reflect the updated taskList
+            let taskCard = button.closest(".task-card");                              // THEN the parent card is selected
+            let taskCardId = taskCard.getAttribute("id");                           // THEN the id of the parent card is read
+            taskCard.remove();                                                        // THEN the parent card is removed from the page
+            if (toDo.some(i => i.id === parseInt(taskCardId))) {
+                toDo = toDo.filter(task => task.id !== parseInt(taskCardId));
+            };
+            if (inProgress.some(i => i.id === parseInt(taskCardId))) {
+                inProgress = inProgress.filter(task => task.id !== parseInt(taskCardId));
+            };
+            if (done.some(i => i.id === parseInt(taskCardId))) {
+                done = done.filter(task => task.id !== parseInt(taskCardId));
+            };
+            localStorage.setItem("toDo", JSON.stringify(toDo));
+            localStorage.setItem("inProgress", JSON.stringify(inProgress));
+            localStorage.setItem("done", JSON.stringify(done));
         })
     });
 }
@@ -92,11 +136,44 @@ function handleDrag(task, taskCard) {
         containment: "document",
         connectToSortable: "#to-do-column, #in-progress-column, #done-column",
         stop: function(event, ui) {
-            var position = {
-                top: ui.position.top,
-                left: ui.position.left
-            };
-            localStorage.setItem("itemPosition", JSON.stringify(position));
+            let taskCardId = taskCard.getAttribute("id");                           // THEN the id of the parent card is read
+            
+            if ($(ui.helper).parent().is("#to-do-column")) {
+                toDo.push(task)
+                console.log(toDo);
+                if (inProgress.some(i => i.id === parseInt(taskCardId))) {
+                    inProgress = inProgress.filter(task => task.id !== parseInt(taskCardId));
+                };
+                if (done.some(i => i.id === parseInt(taskCardId))) {
+                    done = done.filter(task => task.id !== parseInt(taskCardId));
+                };
+                localStorage.setItem("toDo", JSON.stringify(toDo));
+                localStorage.setItem("inProgress", JSON.stringify(inProgress));
+                localStorage.setItem("done", JSON.stringify(done));
+            } else if ($(ui.helper).parent().is("#in-progress-column")) {
+                inProgress.push(task);
+                console.log(inProgress);
+                if (toDo.some(i => i.id === parseInt(taskCardId))) {
+                    toDo = toDo.filter(task => task.id !== parseInt(taskCardId));
+                };
+                if (done.some(i => i.id === parseInt(taskCardId))) {
+                    done = done.filter(task => task.id !== parseInt(taskCardId));
+                };
+                localStorage.setItem("toDo", JSON.stringify(toDo));
+                localStorage.setItem("inProgress", JSON.stringify(inProgress));
+                localStorage.setItem("done", JSON.stringify(done));
+            } else if ($(ui.helper).parent().is("#done-column")) {
+                done.push(task);
+                if (toDo.some(i => i.id === parseInt(taskCardId))) {
+                    toDo = toDo.filter(task => task.id !== parseInt(taskCardId));
+                };
+                if (inProgress.some(i => i.id === parseInt(taskCardId))) {
+                    inProgress = inProgress.filter(task => task.id !== parseInt(taskCardId));
+                };
+                localStorage.setItem("toDo", JSON.stringify(toDo));
+                localStorage.setItem("inProgress", JSON.stringify(inProgress));
+                localStorage.setItem("done", JSON.stringify(done));
+            }
         }
     })
 
@@ -106,5 +183,5 @@ function handleDrag(task, taskCard) {
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {         // WHEN the document loads
     renderTaskList();                   // THEN the task list is rendered
-    handleAddTask();                    // THEN the document is ready to add new tasks
+    handleAddTask();                    // THEN the document is ready to add new tasks                                                                                                                             // THEN the deadline is checked against the current date to determine if the task is overdue, if the task is due within the next week, or if the deadline is still over a week away
 });
