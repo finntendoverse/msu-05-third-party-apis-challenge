@@ -26,11 +26,16 @@ WHEN I refresh the page<br>
 THEN the saved tasks persist
 
 ## Credits
+Xpert Learning assistant helped me generate 2 lines of code:<br>
+if (\[array\].some(i => i.id === parseInt(taskCardId))) {<br>
+    \[array\] = \[array\].filter(task => task.id !== parseInt(taskCardId));<br>
+}<br>
+This code handles checking if the id of the deleted task card is included within the toDo array. If it is, then it will be removed from that array. This syntax is repeated several more times to handle deleting the task from the other 2 arrays, and in the handleDrag function to update the arrays as tasks are dragged and dropped.
 
 ## Deployed Application
-[Deployed Application Link]()
+[Deployed Application Link](finntendoverse.github.io/msu-05-third-party-apis-challenge/)
 
-![Deployed Application]()
+![Deployed Application](/assets/img/project05.png)
 
 ## License
 MIT License
